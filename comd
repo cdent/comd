@@ -50,7 +50,7 @@ def main():
         username = sys.argv[2]
         message = sys.argv[3]
     except IndexError:
-        raise ValueError("Username and Message args required.")
+        raise ValueError("INI filename, Username and Message args required.")
 
     auth_config = read_config(config)
 
