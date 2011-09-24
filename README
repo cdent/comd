@@ -1,0 +1,22 @@
+A very simple tool for sending a direct message to a twitter user,
+using the python-twitter module.
+
+Takes three args:
+
+    * path to ini file (see below)
+    * twitter username to send direct message to
+    * the message to send
+
+The init file is of the ConfigParser variety with the following form:
+
+    [auth]
+    consumer_key: <value>
+    consumer_secret: <value>
+    access_token_key: <value>
+    access_token_secret: <value>
+
+You'll need to get the values from twitter.
+
+Copyright 2011 Chris Dent <cdent@peermore.com>
+
+MIT License

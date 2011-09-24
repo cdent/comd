@@ -1,0 +1,60 @@
+#!/usr/bin/env python
+"""
+A very simple tool for sending a direct message to a twitter user,
+using the python-twitter module.
+
+Takes three args:
+
+    * path to ini file (see below)
+    * twitter username to send direct message to
+    * the message to send
+
+The init file is of the ConfigParser variety with the following form:
+
+    [auth]
+    consumer_key: <value>
+    consumer_secret: <value>
+    access_token_key: <value>
+    access_token_secret: <value>
+
+You'll need to get the values from twitter.
+"""
+
+import sys
+import twitter
+
+from ConfigParser import ConfigParser
+
+
+AUTH_KEYS = ['consumer_key', 'consumer_secret', 'access_token_key',
+        'access_token_secret']
+
+
+def send_message(auth_config, username, message):
+    api = twitter.Api(**auth_config)
+    api.PostDirectMessage(username, message)
+
+
+def read_config(filename):
+    config = ConfigParser()
+    config.read(filename)
+    auth_config = {}
+    for key in AUTH_KEYS:
+        auth_config[key] = config.get('auth', key)
+    return auth_config
+    
+
+def main():
+    try:
+        config = sys.argv[1]
+        username = sys.argv[2]
+        message = sys.argv[3]
+    except IndexError:
+        raise ValueError("Username and Message args required.")
+
+    auth_config = read_config(config)
+
+    send_message(auth_config, username, message)
+
+if __name__ == '__main__':
+    main()
