@@ -18,6 +18,13 @@ The init file is of the ConfigParser variety with the following form:
     access_token_secret: <value>
 
 You'll need to get the values from twitter.
+
+If the script file is named 'sendtweet' then instead of sending a
+direct message it will post a tweet update as the user identified
+by the data in the INI file. Two args are required:
+
+    * path to ini file
+    * the message to tweet
 """
 
 import sys
@@ -35,6 +42,11 @@ def send_message(auth_config, username, message):
     api.PostDirectMessage(username, message)
 
 
+def send_tweet(auth_config, message):
+    api = twitter.Api(**auth_config)
+    api.PostUpdate(message)
+
+
 def read_config(filename):
     config = ConfigParser()
     config.read(filename)
@@ -45,16 +57,24 @@ def read_config(filename):
     
 
 def main():
-    try:
-        config = sys.argv[1]
-        username = sys.argv[2]
-        message = sys.argv[3]
-    except IndexError:
-        raise ValueError("INI filename, Username and Message args required.")
+    if 'sendtweet' in sys.argv[0]:
+        try:
+            config = sys.argv[1]
+            message = sys.argv[2]
+            auth_config = read_config(config)
+            send_tweet(auth_config, message)
+        except IndexError:
+            raise ValueError("INI filename and message args require.")
+    else:
+        try:
+            config = sys.argv[1]
+            username = sys.argv[2]
+            message = sys.argv[3]
+            auth_config = read_config(config)
+            send_message(auth_config, username, message)
+        except IndexError:
+            raise ValueError("INI filename, Username and Message args required.")
 
-    auth_config = read_config(config)
-
-    send_message(auth_config, username, message)
 
 if __name__ == '__main__':
     main()
